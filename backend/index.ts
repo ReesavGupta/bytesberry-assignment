@@ -4,6 +4,7 @@ import cors from 'cors'
 import { Pool } from 'pg'
 dotenv.config()
 import serverRouter from './routes'
+
 class Server {
   public app
   private pool: Pool | undefined
@@ -18,13 +19,14 @@ class Server {
   private config() {
     this.app.use(cors())
     this.app.use(express.json())
-    this.app.use()
   }
 
   private async dbConfig() {
     try {
+      console.log('connecting to the db...')
       this.pool = new Pool()
       const dbInstance = await this.pool.connect()
+
       dbInstance
         ? console.log(`Connected to the database successfully 🤖`)
         : console.log(`Something went wrong while connecting to the db ☹`)
