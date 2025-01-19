@@ -1,12 +1,48 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
+import { Pool } from 'pg'
 dotenv.config()
+import serverRouter from './routes'
+class Server {
+  public app
+  private pool: Pool | undefined
 
-const app = express()
-app.use(cors())
+  constructor() {
+    this.app = express()
+    this.config()
+    this.dbConfig()
+    this.routerConfig()
+  }
 
-const port = process.env.PORT
-app.listen(port, () => {
-  console.log(`server's listening on port: ${port} 😎`)
-})
+  private config() {
+    this.app.use(cors())
+    this.app.use(express.json())
+    this.app.use()
+  }
+
+  private async dbConfig() {
+    try {
+      this.pool = new Pool()
+      const dbInstance = await this.pool.connect()
+      dbInstance
+        ? console.log(`Connected to the database successfully 🤖`)
+        : console.log(`Something went wrong while connecting to the db ☹`)
+      dbInstance.release()
+    } catch (error) {
+      console.error(`Error connecting to the database:`, (error as any).message)
+    }
+  }
+
+  private routerConfig() {
+    this.app.use('/', serverRouter)
+  }
+
+  public start(port: Number) {
+    this.app.listen(port, () => {
+      console.log(`listening on port: ${port} 😎`)
+    })
+  }
+}
+
+export default Server
