@@ -4,6 +4,7 @@ import cors from 'cors'
 import { Pool } from 'pg'
 dotenv.config()
 import serverRouter from './routes'
+import dbConnect from './db/conn'
 
 class Server {
   public app
@@ -24,7 +25,7 @@ class Server {
   private async dbConfig() {
     try {
       console.log('connecting to the db...')
-      this.pool = new Pool()
+      this.pool = await dbConnect()
       const dbInstance = await this.pool.connect()
 
       dbInstance
@@ -32,7 +33,7 @@ class Server {
         : console.log(`Something went wrong while connecting to the db ☹`)
       dbInstance.release()
     } catch (error) {
-      console.error(`Error connecting to the database:`, (error as any).message)
+      console.error(`Error connecting to the database:`, error as any)
     }
   }
 
