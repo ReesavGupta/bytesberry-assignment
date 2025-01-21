@@ -1,5 +1,10 @@
 import { Router } from 'express'
+import { Pool } from 'pg'
 
-const router: Router = Router()
+export default function todoRouterHandler(db: Pool) {
+  const router = Router()
 
-export default router
+  router.get('/get-todos')
+
+  return router
+}

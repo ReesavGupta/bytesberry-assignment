@@ -1,10 +1,14 @@
 import { Router } from 'express'
-import userRouter from './user/user.routes'
 import todoRouter from './user/user.routes'
+import { Pool } from 'pg'
+import userRouterHandler from './user/user.routes'
+import todoRouterHandler from './todo/todo.routes'
 
-const router: Router = Router()
+export default function serverRouter(db: Pool) {
+  const router: Router = Router()
 
-router.use('/user', userRouter)
-router.use('/todo', todoRouter)
+  router.use('/user', userRouterHandler(db))
+  router.use('/todo', todoRouterHandler(db))
 
-export default router
+  return router
+}

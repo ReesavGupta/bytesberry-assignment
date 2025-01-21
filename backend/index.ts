@@ -8,7 +8,7 @@ import dbConnect from './db/conn'
 
 class Server {
   public app
-  private pool: Pool | undefined
+  private dbInstance: Pool | undefined
 
   constructor() {
     this.app = express()
@@ -25,20 +25,23 @@ class Server {
   private async dbConfig() {
     try {
       console.log('connecting to the db...')
-      this.pool = await dbConnect()
-      const dbInstance = await this.pool.connect()
+      this.dbInstance = await dbConnect()
+      const connectionCheck = await this.dbInstance.connect()
 
-      dbInstance
+      connectionCheck
         ? console.log(`Connected to the database successfully 🤖`)
         : console.log(`Something went wrong while connecting to the db ☹`)
-      dbInstance.release()
+      connectionCheck.release()
     } catch (error) {
       console.error(`Error connecting to the database:`, error as any)
     }
   }
 
   private routerConfig() {
-    this.app.use('/', serverRouter)
+    if (!this.dbInstance) {
+      return
+    }
+    this.app.use('/', serverRouter(this.dbInstance))
   }
 
   public start(port: Number) {
