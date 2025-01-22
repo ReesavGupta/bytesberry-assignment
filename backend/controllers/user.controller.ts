@@ -75,7 +75,7 @@ export default class UserController {
       res.status(401).json({ message: 'Invalid credentials' })
       return
     }
-
+    // we can definetly set it to cookies but that would only overengineer the assignment. So just sending back the response ✌
     res.status(200).json({
       message: 'User signed in successfully',
       user: {

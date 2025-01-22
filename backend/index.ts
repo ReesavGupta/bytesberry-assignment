@@ -39,12 +39,15 @@ class Server {
 
   private routerConfig() {
     if (!this.dbInstance) {
+      console.error(
+        'Database instance is not available, skipping router configuration.'
+      )
       return
     }
     this.app.use('/', serverRouter(this.dbInstance))
   }
 
-  public start(port: Number) {
+  public start(port: number) {
     this.app.listen(port, () => {
       console.log(`listening on port: ${port} 😎`)
     })
