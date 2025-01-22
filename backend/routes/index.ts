@@ -5,7 +5,7 @@ import todoRouterHandler from './todo/todo.routes'
 
 export default function serverRouter(db: Pool) {
   const router: Router = Router()
-
+  console.log(`ive reached index route`)
   router.use('/user', userRouterHandler(db))
   router.use('/todo', todoRouterHandler(db))
 

@@ -1,16 +1,25 @@
-import { BrowserRouter as Router } from 'react-router-dom'
-import { Sidebar } from './components/Sidebar'
-import { TodoList } from './components/TodoList'
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
+import Dashboard from './pages/Dashboard'
+import { Signin } from './pages/Signin'
+import { Signup } from './pages/Signup'
 
 function App() {
   return (
     <Router>
-      <div className="flex h-screen bg-gray-50">
-        <Sidebar />
-        <main className="flex-1 overflow-auto">
-          <TodoList />
-        </main>
-      </div>
+      <Routes>
+        <Route
+          path="/"
+          element={<Dashboard />}
+        />
+        <Route
+          path="/signin"
+          element={<Signin />}
+        />
+        <Route
+          path="/signup"
+          element={<Signup />}
+        />
+      </Routes>
     </Router>
   )
 }

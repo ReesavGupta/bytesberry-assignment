@@ -12,12 +12,12 @@ export default class UserController {
   public userSignUp = async (req: Request, res: Response): Promise<void> => {
     try {
       const {
-        username,
+        name,
         email,
         password,
-      }: { username: string; email: string; password: string } = req.body
+      }: { name: string; email: string; password: string } = req.body
 
-      if (!username.trim() || !email.trim() || !password.trim()) {
+      if (!name.trim() || !email.trim() || !password.trim()) {
         res.status(400).json({ message: `All credentials are required` })
       }
 
@@ -32,11 +32,11 @@ export default class UserController {
       const hashedPassword = await bcrypt.hash(password, 10)
 
       const insertQuery = `
-        INSERT INTO users (username, email, password)
+        INSERT INTO users (name, email, password)
         VALUES ($1, $2, $3)
-        RETURNING id, username, email
+        RETURNING id, name, email
       `
-      const values = [username, email, hashedPassword]
+      const values = [name, email, hashedPassword]
       const result = await this.dbConnection.query(insertQuery, values)
 
       res.status(201).json({
@@ -80,7 +80,7 @@ export default class UserController {
       message: 'User signed in successfully',
       user: {
         id: user.id,
-        username: user.username,
+        name: user.name,
         email: user.email,
       },
     })

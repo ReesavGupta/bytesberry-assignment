@@ -5,8 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const user_routes_1 = __importDefault(require("./user/user.routes"));
-const user_routes_2 = __importDefault(require("./user/user.routes"));
-const router = (0, express_1.Router)();
-router.use('/user', user_routes_1.default);
-router.use('/todo', user_routes_2.default);
-exports.default = router;
+const todo_routes_1 = __importDefault(require("./todo/todo.routes"));
+function serverRouter(db) {
+    const router = (0, express_1.Router)();
+    console.log(`ive reached index route`);
+    router.use('/user', (0, user_routes_1.default)(db));
+    router.use('/todo', (0, todo_routes_1.default)(db));
+    return router;
+}
+exports.default = serverRouter;

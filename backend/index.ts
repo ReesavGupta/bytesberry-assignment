@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { Router } from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import { Pool } from 'pg'
@@ -13,8 +13,6 @@ class Server {
   constructor() {
     this.app = express()
     this.config()
-    this.dbConfig()
-    this.routerConfig()
   }
 
   private config() {
@@ -24,16 +22,17 @@ class Server {
 
   private async dbConfig() {
     try {
-      console.log('connecting to the db...')
+      console.log('\nConnecting to the database...')
       this.dbInstance = await dbConnect()
-      const connectionCheck = await this.dbInstance.connect()
 
-      connectionCheck
-        ? console.log(`Connected to the database successfully 🤖`)
-        : console.log(`Something went wrong while connecting to the db ☹`)
-      connectionCheck.release()
+      const connectionCheck = await this.dbInstance.connect()
+      if (connectionCheck) {
+        console.log('Connected to the database successfully 🤖')
+        connectionCheck.release()
+        this.routerConfig()
+      }
     } catch (error) {
-      console.error(`Error connecting to the database:`, error as any)
+      console.error('Error connecting to the database:', error)
     }
   }
 
@@ -47,9 +46,10 @@ class Server {
     this.app.use('/', serverRouter(this.dbInstance))
   }
 
-  public start(port: number) {
+  public async start(port: number) {
+    await this.dbConfig()
     this.app.listen(port, () => {
-      console.log(`listening on port: ${port} 😎`)
+      console.log(`Listening on port: ${port} 😎`)
     })
   }
 }
