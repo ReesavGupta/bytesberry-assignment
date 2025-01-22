@@ -1,4 +1,4 @@
-import { Home, Inbox, Calendar, Tag, Plus } from 'lucide-react'
+import { Home, Inbox, Calendar, Tag, Plus, Search } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 export function Sidebar() {
@@ -14,7 +14,9 @@ export function Sidebar() {
           to="/search"
           className="flex items-center gap-2 text-gray-600 p-2 hover:bg-gray-100 rounded-md"
         >
-          <span className="material-icons">search</span>
+          <span className="material-icons">
+            <Search size={20} />
+          </span>
           Search
         </Link>
 
