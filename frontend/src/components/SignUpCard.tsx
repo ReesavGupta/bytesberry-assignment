@@ -8,7 +8,7 @@ export function SignUp() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
-  const {  } = useAuth()
+  const {} = useAuth()
   //   {
   //     "message": "User created successfully",
   //     "user": {
@@ -30,7 +30,7 @@ export function SignUp() {
         body: JSON.stringify({ name, email, password }),
       })
       const data = await res.json()
-      
+
       navigate('/')
     } catch (error) {
       alert('Signing Up failed 😥')
