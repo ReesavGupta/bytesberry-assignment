@@ -6,6 +6,7 @@ interface Todo {
   user_id: number
   title: string
   progress: number
+  subtodos: Subtodo[] | []
   created_at: string
 }
 
@@ -26,14 +27,46 @@ export default class TodoController {
 
   public getTodos = async (req: Request, res: Response): Promise<void> => {
     const { userId } = req.params
+
     try {
-      const result = await this.dbConnection.query<Todo>(
+      // Fetch all todos for the user
+      const todosResult = await this.dbConnection.query<Todo>(
         `SELECT * FROM todos WHERE user_id = $1`,
         [userId]
       )
-      res.status(200).json(result.rows)
+
+      const todos: Todo[] = todosResult.rows
+
+      if (todos.length === 0) {
+        res.status(200).json([]) // No todos found for the user
+        return
+      }
+
+      const todoIds = todos.map((todo) => todo.id)
+      const subtodosResult = await this.dbConnection.query<Subtodo>(
+        `SELECT * FROM subtodos WHERE todo_id = ANY($1::int[])`,
+        [todoIds]
+      )
+
+      const subtodos = subtodosResult.rows
+
+      // Group subtodos by their parent todo_id
+      const subtodoMap: Record<number, Subtodo[]> = {}
+      subtodos.forEach((subtodo) => {
+        if (!subtodoMap[subtodo.todo_id]) {
+          subtodoMap[subtodo.todo_id] = []
+        }
+        subtodoMap[subtodo.todo_id].push(subtodo)
+      })
+
+      // Attach subtodos to their respective todos
+      todos.forEach((todo: Todo) => {
+        todo.subtodos = subtodoMap[todo.id] || []
+      })
+
+      res.status(200).json(todos)
     } catch (error) {
-      console.error('Error fetching todos:', error)
+      console.error('Error fetching todos with subtodos:', error)
       res.status(500).json({ error: 'Failed to fetch todos' })
     }
   }
@@ -171,10 +204,15 @@ export default class TodoController {
         `UPDATE subtodos SET is_completed = TRUE WHERE id = $1 RETURNING *`,
         [subtodoId]
       )
+
       if (result.rows.length === 0) {
         res.status(404).json({ error: 'Subtodo not found' })
       } else {
-        res.status(200).json(result.rows[0])
+        const subtodo = result.rows[0]
+
+        await this.recalculateProgress(subtodo.todo_id)
+
+        res.status(200).json(subtodo)
       }
     } catch (error) {
       console.error('Error completing subtodo:', error)

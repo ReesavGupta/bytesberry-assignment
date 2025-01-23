@@ -44,7 +44,7 @@ export function AddTodoDialog({ userId, onTodoAdded }: AddTodoDialogProps) {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 text-white bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+        className="flex items-center gap-2 text-white bg-gray-300 px-4 py-1 rounded-md hover:bg-gray-700 transition-colors"
       >
         <Plus size={20} />
         Add task

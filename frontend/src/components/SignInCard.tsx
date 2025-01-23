@@ -2,11 +2,13 @@ import type React from 'react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { LogIn } from 'lucide-react'
+import useAuth from '../store/authStore'
 
 export function SignIn() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
+  const { login } = useAuth()
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
@@ -18,7 +20,8 @@ export function SignIn() {
         body: JSON.stringify({ email, password }),
       })
       const result = await res.json()
-      console.log(result.user)
+      // console.log(result.user)
+      login(result.user)
       navigate('/')
     } catch (error) {
       alert('failed signing in 😑')

@@ -2,7 +2,7 @@ import { create } from 'zustand'
 
 interface User {
   username: string
-  _id: string
+  id: string
 }
 
 const useAuthStore = create<{

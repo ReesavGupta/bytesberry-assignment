@@ -1,7 +1,9 @@
-import { Home, Calendar, User2, Search } from 'lucide-react'
+import { Home, User2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import useAuth from '../store/authStore'
 
 export function Sidebar() {
+  const { user, logout } = useAuth()
   return (
     <aside className="w-64 h-screen bg-white border-r p-4 flex flex-col">
       <nav className="space-y-1">
@@ -15,25 +17,34 @@ export function Sidebar() {
           Twodwoooss App
         </Link>
 
-        <Link
+        {/* <Link
           to="/inbox"
           className="flex items-center gap-2 text-gray-600 p-2 hover:bg-gray-100 rounded-md"
         >
           <Calendar size={20} />
-          <span>My todos</span>
+          <span>My </span>
           <span className="ml-auto text-gray-400">5</span>
-        </Link>
+        </Link> */}
 
         <div className="pt-6">
           <h3 className="text-sm font-semibold text-gray-500 mb-2">Navigate</h3>
 
-          <Link
-            to="/filters"
-            className="flex items-center gap-2 text-gray-600 p-2 hover:bg-gray-100 rounded-md"
-          >
-            <User2 size={20} />
-            <span>Sign Up</span>
-          </Link>
+          {user ? (
+            <div className="flex items-center gap-2 text-gray-600 p-2 hover:bg-gray-100 rounded-md">
+              <User2 size={20} />
+              <span>{user ? 'Logout' : 'Sign Up'}</span>
+            </div>
+          ) : (
+            <Link
+              to="/signup"
+              className="flex items-center gap-2 text-gray-600 p-2 hover:bg-gray-100 rounded-md"
+            >
+              <User2 size={20} />
+              <span>
+                <button onClick={() => logout()}>{'Sign Up'}</button>
+              </span>
+            </Link>
+          )}
         </div>
       </nav>
     </aside>
