@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { UserPlus } from 'lucide-react'
+import useAuth from '../store/authStore'
 
 export function SignUp() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
+  const {  } = useAuth()
   //   {
   //     "message": "User created successfully",
   //     "user": {
@@ -28,7 +30,7 @@ export function SignUp() {
         body: JSON.stringify({ name, email, password }),
       })
       const data = await res.json()
-      console.log(data)
+      
       navigate('/')
     } catch (error) {
       alert('Signing Up failed 😥')

@@ -1,9 +1,16 @@
 import { Home, User2 } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import useAuth from '../store/authStore'
 
 export function Sidebar() {
   const { user, logout } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()
+    navigate('/signin')
+  }
+
   return (
     <aside className="w-64 h-screen bg-white border-r p-4 flex flex-col">
       <nav className="space-y-1">
@@ -17,22 +24,16 @@ export function Sidebar() {
           Twodwoooss App
         </Link>
 
-        {/* <Link
-          to="/inbox"
-          className="flex items-center gap-2 text-gray-600 p-2 hover:bg-gray-100 rounded-md"
-        >
-          <Calendar size={20} />
-          <span>My </span>
-          <span className="ml-auto text-gray-400">5</span>
-        </Link> */}
-
         <div className="pt-6">
           <h3 className="text-sm font-semibold text-gray-500 mb-2">Navigate</h3>
 
           {user ? (
-            <div className="flex items-center gap-2 text-gray-600 p-2 hover:bg-gray-100 rounded-md">
+            <div
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-gray-600 p-2 hover:bg-gray-100 rounded-md cursor-pointer"
+            >
               <User2 size={20} />
-              <span>{user ? 'Logout' : 'Sign Up'}</span>
+              <span>Logout</span>
             </div>
           ) : (
             <Link
@@ -40,9 +41,7 @@ export function Sidebar() {
               className="flex items-center gap-2 text-gray-600 p-2 hover:bg-gray-100 rounded-md"
             >
               <User2 size={20} />
-              <span>
-                <button onClick={() => logout()}>{'Sign Up'}</button>
-              </span>
+              <span>Sign Up</span>
             </Link>
           )}
         </div>
